@@ -1,0 +1,9 @@
+[tool.vercel]
+# This defines your default entrypoint or tells Vercel how to handle the project
+entrypoint = "api/webhook.py"
+
+[tool.vercel.functions."api/webhook.py"]
+maxDuration = 30
+
+[tool.vercel.functions."api/broadcast.py"]
+maxDuration = 30
