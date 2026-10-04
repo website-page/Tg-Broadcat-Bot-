@@ -1,24 +1,21 @@
 import os
-from http.server import BaseHTTPRequestHandler
 import json
+from http.server import BaseHTTPRequestHandler
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 bot = Bot(token=TOKEN)
 
-# Simple global sets/lists (Note: For persistent production storage across serverless spins, 
-# connect a database like Vercel KV. For basic operation, chats are recorded dynamically).
 KNOWN_CHATS = set()
-STORED_BROADCASTS = {"morning": "Default Morning Broadcast", "night": "Default Night Broadcast"}
+STORED_BROADCASTS = {"morning": "☀️️ Default Morning Update", "night": "🌙 Default Night Update"}
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     KNOWN_CHATS.add(chat_id)
-    await update.message.reply_text("🤖 Bot is active and connected! Send /setmorning <text> or /setnight <text> to save broadcasts.")
+    await update.message.reply_text("🤖 Bot is active! Send /setmorning <text> or /setnight <text> to save broadcasts.")
 
 async def handle_my_chat_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Automatically captures group IDs when the bot is added to them
     chat = update.effective_chat
     if chat:
         KNOWN_CHATS.add(chat.id)
@@ -39,7 +36,6 @@ async def set_night(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("⚠️ Please provide text. Example: /setnight Good evening market review.")
 
-# Build PTB application
 application = Application.builder().token(TOKEN).build()
 application.add_handler(CommandHandler("start", start_command))
 application.add_handler(CommandHandler("setmorning", set_morning))
@@ -55,7 +51,6 @@ class handler(BaseHTTPRequestHandler):
             update_data = json.loads(post_data.decode('utf-8'))
             update = Update.de_json(update_data, bot)
             
-            # Process update asynchronously via runner loop
             import asyncio
             asyncio.run(application.initialize())
             asyncio.run(application.process_update(update))
