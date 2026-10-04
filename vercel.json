@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/webhook", "destination": "/api/webhook" }
+  ],
+  "crons": [
+    {
+      "path": "/api/broadcast?time=morning",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/broadcast?time=night",
+      "schedule": "0 20 * * *"
+    }
+  ]
+}
