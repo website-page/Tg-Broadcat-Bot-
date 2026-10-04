@@ -12,18 +12,13 @@ class handler(BaseHTTPRequestHandler):
         query_params = parse_qs(parsed_path.query)
         time_slot = query_params.get("time", ["morning"])[0]
         
-        # Access or pull your stored broadcast message dictionary here
-        # (Recommendation: Swap STORED_BROADCASTS with a persistent DB fetch if chats reset on cold starts)
         messages = {
             "morning": "☀️ Morning Trading Broadcast: Check out today's key setups!",
             "night": "🌙 Night Trading Broadcast: Reviewing today's market performance."
         }
         
         text_to_send = messages.get(time_slot, messages["morning"])
-        
-        # Dummy or stored chat IDs list (Ensure you add your group chat IDs here or load them from a DB)
-        # When your bot runs, it registers incoming events into KNOWN_CHATS.
-        target_chats = [-1001234567890] # Replace/append your target public group IDs here
+        target_chats = [] # Add your public group IDs here or bind to a persistent datastore
         
         success_count = 0
         for chat_id in target_chats:
